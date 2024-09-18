@@ -1,49 +1,29 @@
-    // Solicitar el número de lanzamientos al usuario
-let numeroLanzamientos = parseInt(prompt("¿Cuántas veces quieres lanzar el dado?"));
-
-function simularLanzamientoDados() {
-
-    // Validar que el número de lanzamientos sea positivo
-    if (numeroLanzamientos > 0) {
-        // Variables para contar las apariciones de cada número
-        let conteo1 = 0;
-        let conteo2 = 0;
-        let conteo3 = 0;
-        let conteo4 = 0;
-        let conteo5 = 0;
-        let conteo6 = 0;
-
-        // Simular el lanzamiento del dado
-        for (let i = 0; i < numeroLanzamientos; i++) {
-            // Generar un número aleatorio entre 1 y 6
-            let resultado = Math.floor(Math.random() * 6) + 1;
-
-            // Contar cuántas veces aparece cada número usando condicionales `if`
-            if (resultado === 1) {
-                conteo1++;
-            } else if (resultado === 2) {
-                conteo2++;
-            } else if (resultado === 3) {
-                conteo3++;
-            } else if (resultado === 4) {
-                conteo4++;
-            } else if (resultado === 5) {
-                conteo5++;
-            } else if (resultado === 6) {
-                conteo6++;
-            }
+function calcularPagosEnCuotas() {
+    let montoTotal;
+    // Solicito el monto total a pagar al usuario y valido la entrada
+    do {
+        montoTotal = parseFloat(prompt("Ingresa el monto total a pagar:"));
+        if (isNaN(montoTotal) || montoTotal <= 0) {
+            alert("El monto debe ser un número mayor a cero. Inténtalo de nuevo.");
         }
+    } while (isNaN(montoTotal) || montoTotal <= 0);
 
-        // Mostrar los resultados
-        alert(`Resultados del lanzamiento del dado:
-1: ${conteo1} veces
-2: ${conteo2} veces
-3: ${conteo3} veces
-4: ${conteo4} veces
-5: ${conteo5} veces
-6: ${conteo6} veces`);
-    } else {
-        alert("El número de lanzamientos debe ser mayor a cero.");
-    }
+    let numeroCuotas;
+
+    // Solicito el número de cuotas al usuario y valido la entrada
+    do {
+        numeroCuotas = parseInt(prompt("Ingresa el número de cuotas:"));
+        if (isNaN(numeroCuotas) || numeroCuotas <= 0) {
+            alert("El número de cuotas debe ser un número mayor a cero. Inténtalo de nuevo.");
+        }
+    } while (isNaN(numeroCuotas) || numeroCuotas <= 0);
+
+    // Calculo el monto de cada cuota
+    let montoPorCuota = montoTotal / numeroCuotas;
+
+    // Muestro el resultado
+    alert("El monto de cada cuota es: " + montoPorCuota.toFixed(2));
 }
 
+// Llamo a la función para ejecutar el simulador
+calcularPagosEnCuotas();
