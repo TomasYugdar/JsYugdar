@@ -1,6 +1,6 @@
 function calcularPagosEnCuotas() {
     let montoTotal;
-    // Solicito el monto total al usuario y valido la entrada
+    // Solicito el monto total a pagar al usuario y valido la entrada
     do {
         montoTotal = parseFloat(prompt("Ingresa el monto total a pagar:"));
         if (isNaN(montoTotal) || montoTotal <= 0) {
