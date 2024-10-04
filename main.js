@@ -1,5 +1,20 @@
+// Array para almacenar el historial de pagos
+let historialPagos = [];
+
+// Función para agregar un pago al historial
+function agregarPago(montoTotal, numeroCuotas) {
+    let pago = {
+        montoTotal: montoTotal,
+        numeroCuotas: numeroCuotas,
+        montoPorCuota: montoTotal / numeroCuotas
+    };
+    historialPagos.push(pago); // Agregamos el pago al array
+}
+
+// Función para calcular pagos en cuotas
 function calcularPagosEnCuotas() {
     let montoTotal;
+    
     // Solicito el monto total a pagar al usuario y valido la entrada
     do {
         montoTotal = parseFloat(prompt("Ingresa el monto total a pagar:"));
@@ -18,12 +33,21 @@ function calcularPagosEnCuotas() {
         }
     } while (isNaN(numeroCuotas) || numeroCuotas <= 0);
 
-    // Calculo el monto de cada cuota
-    let montoPorCuota = montoTotal / numeroCuotas;
+    // Agrego el pago al historial
+    agregarPago(montoTotal, numeroCuotas);
 
     // Muestro el resultado
-    alert("El monto de cada cuota es: " + montoPorCuota.toFixed(2));
+    alert("El monto de cada cuota es: " + (montoTotal / numeroCuotas).toFixed(2));
+}
+
+// Función para filtrar los pagos
+function filtrarPagosPorMonto(montoMinimo) {
+    return historialPagos.filter(pago => pago.montoTotal > montoMinimo);
 }
 
 // Llamo a la función para ejecutar el simulador
 calcularPagosEnCuotas();
+
+// Ejemplo de uso del filtrado
+let pagosFiltrados = filtrarPagosPorMonto(1500); // Filtra pagos mayores a $1500
+alert("Pagos mayores a $1500: " + JSON.stringify(pagosFiltrados));
