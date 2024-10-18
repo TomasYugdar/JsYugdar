@@ -1,5 +1,5 @@
 // Array para almacenar el historial de pagos
-let historialPagos = [];
+let historialPagos = JSON.parse(localStorage.getItem('historialPagos')) || [];
 
 // Función para agregar un pago al historial
 function agregarPago(montoTotal, numeroCuotas) {
@@ -9,45 +9,51 @@ function agregarPago(montoTotal, numeroCuotas) {
         montoPorCuota: montoTotal / numeroCuotas
     };
     historialPagos.push(pago); // Agregamos el pago al array
+    // Guardar historial en el localStorage
+    localStorage.setItem('historialPagos', JSON.stringify(historialPagos));
+    mostrarHistorialPagos();
 }
 
-// Función para calcular pagos en cuotas
-function calcularPagosEnCuotas() {
-    let montoTotal;
-    
-    // Solicito el monto total a pagar al usuario y valido la entrada
-    do {
-        montoTotal = parseFloat(prompt("Ingresa el monto total a pagar:"));
-        if (isNaN(montoTotal) || montoTotal <= 0) {
-            alert("El monto debe ser un número mayor a cero. Inténtalo de nuevo.");
-        }
-    } while (isNaN(montoTotal) || montoTotal <= 0);
+// Función para mostrar el historial de pagos en el DOM
+function mostrarHistorialPagos() {
+    const historialDiv = document.getElementById('historial');
+    historialDiv.innerHTML = ''; // Limpiar el historial previo
 
-    let numeroCuotas;
+    historialPagos.forEach((pago, index) => {
+        const pagoElement = document.createElement('div');
+        pagoElement.className = 'pago';
+        pagoElement.textContent = `Pago ${index + 1}: Monto Total: $${pago.montoTotal.toFixed(2)}, Número de Cuotas: ${pago.numeroCuotas}, Monto por Cuota: $${pago.montoPorCuota.toFixed(2)}`;
+        historialDiv.appendChild(pagoElement);
+    });
+}
 
-    // Solicito el número de cuotas al usuario y valido la entrada
-    do {
-        numeroCuotas = parseInt(prompt("Ingresa el número de cuotas:"));
-        if (isNaN(numeroCuotas) || numeroCuotas <= 0) {
-            alert("El número de cuotas debe ser un número mayor a cero. Inténtalo de nuevo.");
-        }
-    } while (isNaN(numeroCuotas) || numeroCuotas <= 0);
-
+// Evento para calcular pagos al enviar el formulario
+document.getElementById('pagoForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Evitar que el formulario se envíe
+    const montoTotal = parseFloat(document.getElementById('montoTotal').value);
+    const numeroCuotas = parseInt(document.getElementById('numeroCuotas').value);
     // Agrego el pago al historial
     agregarPago(montoTotal, numeroCuotas);
+    
+    // Limpiar el formulario
+    document.getElementById('pagoForm').reset();
+});
 
-    // Muestro el resultado
-    alert("El monto de cada cuota es: " + (montoTotal / numeroCuotas).toFixed(2));
-}
+// Evento para filtrar pagos
+document.getElementById('filtrarPagosBtn').addEventListener('click', function() {
+    const montoMinimo = parseFloat(prompt("Ingresa el monto mínimo para filtrar:")); // Cambiar a un input en el futuro
+    const pagosFiltrados = filtrarPagosPorMonto(montoMinimo);
+    
+    // Mostrar resultados de filtro
+    const resultadoFiltradoDiv = document.createElement('div');
+    resultadoFiltradoDiv.innerHTML = `<strong>Pagos mayores a $${montoMinimo}:</strong> ${JSON.stringify(pagosFiltrados)}`;
+    document.getElementById('historial').appendChild(resultadoFiltradoDiv);
+});
 
 // Función para filtrar los pagos
 function filtrarPagosPorMonto(montoMinimo) {
     return historialPagos.filter(pago => pago.montoTotal > montoMinimo);
 }
 
-// Llamo a la función para ejecutar el simulador
-calcularPagosEnCuotas();
-
-// Ejemplo de uso del filtrado
-let pagosFiltrados = filtrarPagosPorMonto(1500); // Filtra pagos mayores a $1500
-alert("Pagos mayores a $1500: " + JSON.stringify(pagosFiltrados));
+// Mostrar el historial al cargar la página
+mostrarHistorialPagos();
